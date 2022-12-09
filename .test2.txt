@@ -1,3 +1,0 @@
-Hello everebody
-My name is Anton and i am study nodeJS. 
-New text
