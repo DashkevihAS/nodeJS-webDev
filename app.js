@@ -1,24 +1,28 @@
 const fs = require('fs');
 const zlib = require('zlib');
 
-const readStream = fs.createReadStream('./docs/text.txt');
-const writeStream = fs.createWriteStream('./docs/new-text.txt');
-const compressStream = zlib.createGzip();
+const { createServer } = require('http');
 
-// readStream.on('data', (chunk) => {
-//   writeStream.write('\n-----CHUNK START -----\n');
-//   writeStream.write(chunk);
-//   writeStream.write('\n-----CHUNK END -----\n');
-// });
+const PORT = 3000;
 
-const handleError = () => {
-  console.log('Error');
-  readStream.destroy();
-  writeStream.end('Finished with error ...');
-};
+const server = createServer((req, res) => {
+  console.log('Server request');
+  console.log(req.url, req.method);
 
-readStream
-  .on('error', handleError)
-  .pipe(compressStream)
-  .pipe(writeStream)
-  .on('error', handleError);
+  // res.setHeader('Content-Type', 'text/html');
+  // res.write('<head><link rel="stylesheet" href="#"></head>');
+  // res.write('<h1>Hello world</h1>');
+
+  res.setHeader('Content-Type', 'app;ication/json');
+
+  const data = JSON.stringify([
+    { name: 'benny', age: 35 },
+    { name: 'alla', age: 32 },
+  ]);
+
+  res.end(data);
+});
+
+server.listen(PORT, 'localhost', (error) => {
+  error ? console.log(error) : console.log(`Listening port ${PORT}`);
+});
