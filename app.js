@@ -1,26 +1,54 @@
 const fs = require('fs');
-const zlib = require('zlib');
-
 const { createServer } = require('http');
+const path = require('path');
 
 const PORT = 3000;
 
 const server = createServer((req, res) => {
   console.log('Server request');
-  console.log(req.url, req.method);
 
-  // res.setHeader('Content-Type', 'text/html');
-  // res.write('<head><link rel="stylesheet" href="#"></head>');
-  // res.write('<h1>Hello world</h1>');
+  res.setHeader('Content-Type', 'text/html');
 
-  res.setHeader('Content-Type', 'app;ication/json');
+  const createPath = (page) => path.resolve(__dirname, 'views', `${page}.html`);
 
-  const data = JSON.stringify([
-    { name: 'benny', age: 35 },
-    { name: 'alla', age: 32 },
-  ]);
+  let basePath = '';
 
-  res.end(data);
+  switch (req.url) {
+    // обработка нескольких путей и возврат одного документа
+    case '/':
+    case '/home':
+    case '/index.html':
+      basePath = createPath('index');
+      res.statusCode = 200;
+      break;
+
+    //  перенаправление с несуществующей страницы
+    case '/about-us':
+      res.statusCode = 301;
+      res.setHeader('Location', '/contacts');
+      res.end();
+      break;
+
+    case '/contacts':
+      basePath = createPath('contacts');
+      res.statusCode = 200;
+      break;
+    default:
+      basePath = createPath('error');
+      res.statusCode = 404;
+      break;
+  }
+
+  fs.readFile(basePath, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.statusCode = 500;
+      res.end();
+    } else {
+      res.write(data);
+      res.end();
+    }
+  });
 });
 
 server.listen(PORT, 'localhost', (error) => {
