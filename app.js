@@ -22,7 +22,7 @@ const server = createServer((req, res) => {
       res.statusCode = 200;
       break;
 
-    //  перенаправление с несуществующей страницы
+    //  перенаправление с устаревшей страницы
     case '/about-us':
       res.statusCode = 301;
       res.setHeader('Location', '/contacts');
