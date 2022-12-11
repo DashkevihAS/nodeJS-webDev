@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+var morgan = require('morgan');
 
 const app = express();
 
@@ -13,6 +14,14 @@ const createPath = (page) =>
 app.listen(PORT, (error) => {
   error ? console.log(error) : console.log(`Listening port ${PORT}`);
 });
+
+// middleware  который выводит данные сразу после получения запроса
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms'),
+);
+
+// чтобы был доступ к стилям на сервере и подлючению их в html(ejs)
+app.use(express.static('styles'));
 
 app.get('/', (req, res) => {
   const title = 'Home';
