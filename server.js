@@ -57,6 +57,6 @@ app.use(postRoutes);
 app.use(contactRoutes);
 
 app.use((req, res) => {
-  const title = 'Error';
+  const title = 'Error Page';
   res.status(404).render(createPath('error'), { title });
 });
