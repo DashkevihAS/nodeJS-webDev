@@ -13,6 +13,7 @@ app.set('view engine', 'ejs');
 
 const PORT = 3000;
 
+// подключаем Mongo - добавляем в строку логин пороль и название базы данных
 const db =
   'mongodb+srv://DashkevichAS:Citroenc5@cluster0.nffmidu.mongodb.net/node-blog?retryWrites=true&w=majority';
 
