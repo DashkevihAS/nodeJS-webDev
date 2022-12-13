@@ -6,6 +6,7 @@ const methodOverride = require('method-override');
 const createPath = require('./helpers/create-path');
 
 const postRoutes = require('./routes/post-routes');
+const postApiRoutes = require('./routes/api-post-routes');
 const contactRoutes = require('./routes/contact-routes');
 
 const app = express();
@@ -54,6 +55,7 @@ app.get('/about-us', (req, res) => {
 });
 
 app.use(postRoutes);
+app.use(postApiRoutes);
 app.use(contactRoutes);
 
 app.use((req, res) => {
