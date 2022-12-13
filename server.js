@@ -1,33 +1,37 @@
 const express = require('express');
-var morgan = require('morgan');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
+const chalk = require('chalk');
+require('dotenv').config();
 
 const createPath = require('./helpers/create-path');
 
 const postRoutes = require('./routes/post-routes');
+const postApiRoutes = require('./routes/api-post-routes');
 const contactRoutes = require('./routes/contact-routes');
+
+// разукрашивают сообщения в консоли
+const errorMsg = chalk.bgKeyword('white').redBright;
+const successMsg = chalk.bgKeyword('green').white;
 
 const app = express();
 
 app.set('view engine', 'ejs');
 
-const PORT = 3000;
-
-// подключаем Mongo - добавляем в строку логин пороль и название базы данных
-const db =
-  'mongodb+srv://DashkevichAS:Citroenc5@cluster0.nffmidu.mongodb.net/node-blog?retryWrites=true&w=majority';
-
+// process.env. скрывает приватные данные для публичных репо
 mongoose
-  .connect(db, {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then((res) => console.log('connected to DB'))
-  .catch((error) => console.log(error));
+  .then((res) => console.log(successMsg('connected to DB')))
+  .catch((error) => console.log(errorMsg(error)));
 
-app.listen(PORT, (error) => {
-  error ? console.log(error) : console.log(`Listening port ${PORT}`);
+app.listen(process.env.PORT, (error) => {
+  error
+    ? console.log(errorMsg(error))
+    : console.log(successMsg(`Listening port ${process.env.PORT}`));
 });
 
 // middleware  который выводит данные сразу после получения запроса
@@ -54,6 +58,7 @@ app.get('/about-us', (req, res) => {
 });
 
 app.use(postRoutes);
+app.use(postApiRoutes);
 app.use(contactRoutes);
 
 app.use((req, res) => {
